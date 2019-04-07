@@ -7,14 +7,14 @@ import Input from '../components/Input';
 import { insertTodo } from "../actions";
 
 
-export class Main extends Component {
+class Main extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
       nome: '',
-      apelido: '',
+      apelido: 'ds',
       todo: ''
     }
   }
@@ -24,9 +24,7 @@ export class Main extends Component {
   }
 
   save() {
-    console.log(this.state);
-    
-    //  this.props.saveTodo(this.state);
+  this.props.saveTodo(this.state)
   }
 
   render() {
@@ -41,18 +39,6 @@ export class Main extends Component {
           {
             "name": "Ebony Maw",
             "email": "ebony@appdividend.com"
-          },
-          {
-            "name": "Ebony Maw",
-            "email": "ebony@appdividend.com"
-          },
-          {
-            "name": "Ebony Maw",
-            "email": "ebony@appdividend.com"
-          },
-          {
-            "name": "Black Dwarf",
-            "email": "dwarf@appdividend.com"
           }
         ]
     }
@@ -74,7 +60,7 @@ export class Main extends Component {
             <Input value={value => this.setState({ todo: value })} placeholder='O que pretende salvar?' />
           </View>
           <View style={{ flex: 7 }}>
-            <Button click={() => this.save()} />
+            <Button click={() => this.save(this)} />
           </View>
         </View>
 
@@ -116,17 +102,4 @@ const styles = StyleSheet.create({
 
 })
 
-
-
-const mapStateToProps = (state) => ({
-
-})
-
-const mapDispatchToProps = dispatch => {
-  return {
-    saveTodo: todo => dispatch(insertTodo(todo))
-  }
-
-}
-
-export default connect(null, mapDispatchToProps)(Main)
+export default connect(null, { saveTodo: insertTodo})(Main)

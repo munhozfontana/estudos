@@ -1,11 +1,11 @@
 import { createAppContainer, createStackNavigator } from 'react-navigation';
 import React from "react";
 import Degrade from './components/Degrade';
-import { Main } from './pages/Main';
+import Main from './pages/Main';
 
 
 const AppNavigator = createStackNavigator({
-    'Main': {
+    'main': {
         screen: Main,
         navigationOptions: {
             title: 'Todo IESB',
