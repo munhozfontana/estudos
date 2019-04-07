@@ -1,13 +1,10 @@
 const colors = {
-  secundaria: '#7F54FF',
-  sombra: '#4D50E8',
-  primaria:  '#618FFF',
-  others: '#4DA2E8',
-  detalhes: '#54DEFF',
+  secundaria: '#FFA22C',
+  sombra: '#E00083',
+  primaria:  '#8700F5',
+  others: '#324FE0',
+  detalhes: '#FAA737',
   }
+
   
   export default colors;
-
-
-
-

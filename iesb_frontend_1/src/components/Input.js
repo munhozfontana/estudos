@@ -44,10 +44,11 @@ export default class Input extends Component {
                     style={[styles.input, animatedStyle]}>
                     <TextInput
                         placeholderTextColor={colors.primaria}
-                        style={[styles.item]}
+                        style={[styles.item,{color: colors.primaria}]}
                         placeholder={placeholder}
                         onFocus={() => this.onFocus()}
                         onBlur={() => this.onBlur()}
+                        onChangeText={text => this.props.value(text)}
                     />
                 </Animated.View>
             </View>

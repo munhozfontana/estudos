@@ -13,29 +13,29 @@ export class Button extends Component {
     }
 
     onPress() {
+        this.props.click();
         Animated.timing(this.changeColors, {
             toValue: 300,
             duration: 250
         }).start(() => {
             Animated.timing(this.changeColors, {
                 toValue: 0,
-                duration: 50
-            }).start(()=>  this.onPress());
+                duration: 250
+            }).start();
         })
+
+        
+
     }
 
-
     render() {
-
         const interpolateColor = this.changeColors.interpolate({
             inputRange: [0, 300],
             outputRange: [colors.primaria, colors.detalhes]
         })
 
-
-
         return (
-            <TouchableWithoutFeedback onPress={() => this.onPress()} >
+            <TouchableWithoutFeedback onPress={() => {this.onPress()}} >
                 <Animated.View style={[styles.container, { borderColor: interpolateColor}]} >
                     <View style={styles.btn}>
                         <Animated.Text style={[styles.text,{ color: interpolateColor} ]}>Salvar</Animated.Text>
@@ -65,7 +65,5 @@ const styles = StyleSheet.create({
         color: colors.primaria
     }
 })
-
-
 
 export default Button;
