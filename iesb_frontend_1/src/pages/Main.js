@@ -1,47 +1,62 @@
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
+import { tryInsertTodo, tryListAllTodo ,tryDeleteTodo } from "../actions";
 import { Button } from '../components/Button';
 import Card from '../components/Card';
 import Input from '../components/Input';
-import { insertTodo } from "../actions";
+
 
 
 class Main extends Component {
+
 
   constructor(props) {
     super(props);
 
     this.state = {
       nome: '',
-      apelido: 'ds',
-      todo: ''
+      apelido: '',
+      idade: '',
+      todo: '',
+      listaTodos: []
     }
   }
 
   componentDidMount() {
+    this.listarCards();
+  }
 
+  listarCards() {
+    this.props.tryListAllTodo()
+    .then(list => {
+      this.setState({
+        listaTodos: list
+      })
+    })
+    .catch(error => {
+      console.log('error insert');
+    });
+  }
+
+  deleteCard(id) {
+    this.props.tryDeleteTodo(id)
+      .then(()=>{
+        this.listarCards();
+      })
   }
 
   save() {
-  this.props.saveTodo(this.state)
+    this.props.tryInsertTodo(this.state)
+      .then(insert => {
+        this.listarCards();
+      })
+      .catch(error => {
+        console.log('error insert');
+      });
   }
 
   render() {
-
-    const dados = {
-      "users":
-        [
-          {
-            "name": "Proxima Midnight",
-            "email": "proxima@appdividend.com"
-          },
-          {
-            "name": "Ebony Maw",
-            "email": "ebony@appdividend.com"
-          }
-        ]
-    }
 
     return (
       <View style={[styles.container]}>
@@ -59,19 +74,27 @@ class Main extends Component {
           <View style={{ flex: 12 }}>
             <Input value={value => this.setState({ todo: value })} placeholder='O que pretende salvar?' />
           </View>
-          <View style={{ flex: 7 }}>
-            <Button click={() => this.save(this)} />
+
+          <View style={{ flex: 6 }}>
+            <Input value={value => this.setState({ idade: value })} placeholder='Idade' />
+          </View>
+
+        </View>
+
+        <View style={[styles.row, { flexDirection: 'row' }]}>
+          <View style={{ flex: 1 }}>
+            <Button click={() => this.save()} />
           </View>
         </View>
 
 
         <FlatList
-          data={dados.users}
+          data={this.state.listaTodos}
           renderItem={(item) => (
-            <Card card={item} />
+            <Card deleteCard={(id)=> this.deleteCard(id)} card={item} />
           )}
           showsVerticalScrollIndicator={true}
-          keyExtractor={item => item.email}
+          keyExtractor={item => item.id}
           numColumns={2}
           ListHeaderComponent={props => (<View style={styles.marginTop} />)}
           ListFooterComponent={props => (<View style={styles.marginBottom} />)}
@@ -102,4 +125,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default connect(null, { saveTodo: insertTodo})(Main)
+export default connect( null , { tryListAllTodo , tryInsertTodo, tryDeleteTodo })(Main)

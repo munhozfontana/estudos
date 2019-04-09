@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
-import colors from '../utils/utils';
+import utils from '../utils/utils';
 
 export class Button extends Component {
 
@@ -24,14 +24,12 @@ export class Button extends Component {
             }).start();
         })
 
-        
-
     }
 
     render() {
         const interpolateColor = this.changeColors.interpolate({
             inputRange: [0, 300],
-            outputRange: [colors.primaria, colors.detalhes]
+            outputRange: [utils.colors.primaria, utils.colors.detalhes]
         })
 
         return (
@@ -62,7 +60,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 18,
-        color: colors.primaria
+        color: utils.colors.primaria
     }
 })
 

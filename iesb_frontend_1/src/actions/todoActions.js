@@ -1,3 +1,7 @@
+import axios from 'axios';
+import utils from '../utils/utils';
+
+const url = 'localhost:3000/'
 
 export const GET_TODO = 'GET_TODO';
 export const getTodo = todo => ({
@@ -5,26 +9,70 @@ export const getTodo = todo => ({
 	todo
 });
 
+// LISTAR all ---->>>
 export const LIST_ALL_TODO = 'LIST_ALL_TODO';
 export const listarAllTodo = todo => ({
 	type: LIST_ALL_TODO,
 	todo
 });
 
-export const INSERT_TODO= 'INSERT_TODO';
+export const tryListAllTodo = () => dispatch => {
+	return axios.get(`${utils.url}/todos`)
+		.then(response => {
+			listarAllTodo(dispatch(listarAllTodo(response)));
+			return response.data;
+		}).catch(error => {
+			return error;
+		});
+}
+
+// LISTAR all ----<<<
+
+// INSERT ---->>>
+export const INSERT_TODO = 'INSERT_TODO';
 export const insertTodo = todo => ({
 	type: INSERT_TODO,
 	todo
 });
 
-export const UPDATE_TODO= 'UPDATE_TODO';
+
+export const tryInsertTodo = props => dispatch => {
+	return axios.post(`${utils.url}/todo`, props)
+		.then(response => {
+			insertTodo(dispatch(insertTodo(response)));
+			return response.data;
+		}).catch(error => {
+			return error;
+		});
+}
+// INSERT ----<<<
+
+
+
+export const UPDATE_TODO = 'UPDATE_TODO';
 export const updateTodo = todo => ({
 	type: UPDATE_TODO,
 	todo
+
 });
 
-export const DELETE_TODO= 'DELETE_TODO';
+
+// DELETE ---->>>
+
+export const DELETE_TODO = 'DELETE_TODO';
 export const deleteTodo = todo => ({
 	type: DELETE_TODO,
 	todo
 });
+export const tryDeleteTodo = id => dispatch => {
+	console.log(`${utils.url}/todo/${id}`);
+	
+	return axios.delete(`${utils.url}/todo/${id}`)
+		.then(response => {
+			deleteTodo(dispatch(deleteTodo(response)));
+			return response.data;
+		}).catch(error => {
+			return error;
+		});
+}
+// DELETE ----<<<

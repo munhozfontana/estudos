@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo';
 import React from "react";
-import colors from '../utils/utils';
+import utils from '../utils/utils';
 
 
 const Degrade = (props) => (
-    <LinearGradient colors={[colors.primaria, colors.secundaria ]}
+    <LinearGradient colors={[utils.colors.primaria, utils.colors.secundaria ]}
         style={{ flex: 1 }}
         start={[0, 1]}
         end={[1, 0]}>
