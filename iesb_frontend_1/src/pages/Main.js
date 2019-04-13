@@ -124,5 +124,12 @@ const styles = StyleSheet.create({
   }
 
 })
+const mapStateToProps = (state) => {
+  return {
+    open: state,
+  }
+};
+
+
 
 export default connect( null , { tryListAllTodo , tryInsertTodo, tryDeleteTodo })(Main)

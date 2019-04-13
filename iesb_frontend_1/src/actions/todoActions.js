@@ -39,7 +39,7 @@ export const insertTodo = todo => ({
 export const tryInsertTodo = props => dispatch => {
 	return axios.post(`${utils.url}/todo`, props)
 		.then(response => {
-			insertTodo(dispatch(insertTodo(response)));
+			insertTodo(dispatch(insertTodo({response, props})));
 			return response.data;
 		}).catch(error => {
 			return error;

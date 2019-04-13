@@ -1,17 +1,65 @@
 const express = require('express')
 const app = express()
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 const bodyParser = require('body-parser');
-
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-
+const porta = 3000
+const palavraChave = `I'am a heppy developer`
 let todos = []
+let usuarios = [
+    {
+        login: 'usuario',
+        senha: 'usuario'
+    },
+    {
+        login: 'usuario1',
+        senha: 'usuario1'
+    }
+]
+
+
 let idTodo = 0;
+
+gerarJWT = (usuario) => {
+    return jwt.sign({
+        exp: Math.floor(Date.now() / 1000) + (60 * 0.5),
+        data: usuario
+    }, palavraChave);
+}
+
+checkUser = (req, res, next) => {
+
+    var token = req.headers['x-access-token'];
+
+    if (!token) return res.status(401 ).send({ auth: false, message: 'Token não encontrado' })
+
+    jwt.verify(token, palavraChave, (error, decoded) => {
+        if (error) return res.status(500).send({ auth: false, message: 'Falha ao altenticar o token' });
+        
+
+    })
+
+    next();
+}
+
+app.use(checkUser);
+
+app.post('/login', ({ body }, res) => {
+    let usuarioEncontrado = usuarios.find(usuario => body.login == usuario.login && body.senha == usuario.senha);
+    let userJWT = gerarJWT(usuarioEncontrado);
+
+    usuarioEncontrado ?
+        res.status(200).send({ token: gerarJWT(usuarioEncontrado), auth: true }) :
+        res.status(401).send("login ou senha estão incorretos")
+})
+
+
+
 
 app.get('/todos', (req, res) => {
     res.status(200).send(todos)
@@ -22,6 +70,9 @@ app.get('/todo/:byId', (req, res) => {
     todo ?
         res.status(200).send(todo) : res.status(403).send(`Todo com o Id:${req.params.byId} não foi encontrado`);
 });
+
+
+
 
 app.post('/todo', (req, res) => {
     const { nome, apelido, idade, todo } = req.body
@@ -48,7 +99,7 @@ app.delete('/todo/:byId', (req, res) => {
 
     inicialUser != todos.length ?
         res.status(200).send('Todo removido com sucesso') : res.status(404).send(`Todo com o Id:${req.params.byId} não foi encontrado`);
-});
+})
 
 
-app.listen(3000, () => console.log('Back-end na porta 3002'));
+app.listen(porta, () => console.log(`Back-end na porta ${porta}`)); 
