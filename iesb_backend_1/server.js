@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
 
 const bodyParser = require('body-parser');
 app.use(cors());
@@ -9,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const porta = 3000
-const tempoDeLogin = null;
+let tempoDeLogin = null;
 const palavraChave = `I'am a heppy developer`
 let todos = []
 let usuarios = [
@@ -23,39 +24,38 @@ let usuarios = [
     }
 ]
 
-
-let idTodo = 0;
-
 gerarJWT = (usuario) => {
     return jwt.sign({
         usuario
     }, palavraChave, { expiresIn: 60 });
 }
 
-checkUser = (req, res, next) => {
+verificarTokenJWT = (req, res, next) => {
+    console.log(`ip`,  req.ip);
+    console.log(`hostname`,  req.hostname);
+    
     const { headers, url } = req;
-    var token = headers['x-access-token'];
     if (url == `/login`) {
-        next();
-    } else {
-        if (!token) return res.status(401).send({ auth: false, message: 'Token não encontrado' })
-        jwt.verify(token, palavraChave, function (err, decoded) {
-            if (decoded) {
-                this.tempoDeLogin =  ((new Date().getTime() + 1) / 1000 - decoded.exp) * -1 
-                console.log(`req 1`);
-            }
+      return next();
+    }
 
+    var token = headers['x-access-token'];
+    if (!token) return res.status(401).send({ auth: false, message: 'Token não encontrado' })
 
-        });
+    try {
+       var jwtDecodificado = jwt.verify(token, palavraChave);
+    
+        tempoDeLogin = ((new Date().getTime() + 1) / 1000 - jwtDecodificado.exp) * -1
         next();
+    } catch (error) {
+        res.status(500).send({ auth: false, message: 'Token inválido' })
     }
 }
 
-app.use(checkUser);
+app.use(verificarTokenJWT);
 
 app.post('/login', ({ body }, res) => {
     let usuarioEncontrado = usuarios.find(usuario => body.login == usuario.login && body.senha == usuario.senha);
-    let userJWT = gerarJWT(usuarioEncontrado);
 
     usuarioEncontrado ?
         res.status(200).send({ token: gerarJWT(usuarioEncontrado), auth: true }) :
@@ -63,9 +63,7 @@ app.post('/login', ({ body }, res) => {
 })
 
 app.get('/todos', (req, res) => {
-    console.log(`req 2`);
-    
-    res.status(200).send({todos, teste : this.tempoDeLogin})
+    res.status(200).send({ todos, tempoDeLogin })
 });
 
 app.get('/todo/:byId', (req, res) => {
@@ -79,7 +77,7 @@ app.post('/todo', (req, res) => {
     const { nome, apelido, idade, todo } = req.body
     nome && idade ?
         idade < 18 ?
-            res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`) : (todos.push({ id: idTodo++, nome, apelido, idade, todo }),
+            res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`) : (todos.push({ id: uuid(), nome, apelido, idade, todo }),
                 res.status(201).send(`O Todo ${nome} foi criado com sucesso`)) : res.status(403).send(`Nome e Idade não podem ser nulos`);
 });
 
