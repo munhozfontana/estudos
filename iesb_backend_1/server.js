@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const porta = 3000
+const tempoDeLogin = null;
 const palavraChave = `I'am a heppy developer`
 let todos = []
 let usuarios = [
@@ -27,24 +28,27 @@ let idTodo = 0;
 
 gerarJWT = (usuario) => {
     return jwt.sign({
-        exp: Math.floor(Date.now() / 1000) + (60 * 0.5),
-        data: usuario
-    }, palavraChave);
+        usuario
+    }, palavraChave, { expiresIn: 60 });
 }
 
 checkUser = (req, res, next) => {
+    const { headers, url } = req;
+    var token = headers['x-access-token'];
+    if (url == `/login`) {
+        next();
+    } else {
+        if (!token) return res.status(401).send({ auth: false, message: 'Token não encontrado' })
+        jwt.verify(token, palavraChave, function (err, decoded) {
+            if (decoded) {
+                this.tempoDeLogin =  ((new Date().getTime() + 1) / 1000 - decoded.exp) * -1 
+                console.log(`req 1`);
+            }
 
-    var token = req.headers['x-access-token'];
 
-    if (!token) return res.status(401 ).send({ auth: false, message: 'Token não encontrado' })
-
-    jwt.verify(token, palavraChave, (error, decoded) => {
-        if (error) return res.status(500).send({ auth: false, message: 'Falha ao altenticar o token' });
-        
-
-    })
-
-    next();
+        });
+        next();
+    }
 }
 
 app.use(checkUser);
@@ -58,11 +62,10 @@ app.post('/login', ({ body }, res) => {
         res.status(401).send("login ou senha estão incorretos")
 })
 
-
-
-
 app.get('/todos', (req, res) => {
-    res.status(200).send(todos)
+    console.log(`req 2`);
+    
+    res.status(200).send({todos, teste : this.tempoDeLogin})
 });
 
 app.get('/todo/:byId', (req, res) => {
@@ -70,8 +73,6 @@ app.get('/todo/:byId', (req, res) => {
     todo ?
         res.status(200).send(todo) : res.status(403).send(`Todo com o Id:${req.params.byId} não foi encontrado`);
 });
-
-
 
 
 app.post('/todo', (req, res) => {
