@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, StyleSheet, TextInput, View } from 'react-native';
-import colors from '../utils/utils';
+import utils from '../utils/utils';
 
 
 export default class Input extends Component {
@@ -31,7 +31,7 @@ export default class Input extends Component {
         const { placeholder } = this.props
         const interpolateColor = this.changeColors.interpolate({
             inputRange: [0, 300],
-            outputRange: [colors.primaria, colors.detalhes]
+            outputRange: [utils.colors.primaria, utils.colors.detalhes]
         })
         
         const animatedStyle = {
@@ -43,11 +43,12 @@ export default class Input extends Component {
                 <Animated.View
                     style={[styles.input, animatedStyle]}>
                     <TextInput
-                        placeholderTextColor={colors.primaria}
-                        style={[styles.item]}
+                        placeholderTextColor={utils.colors.primaria}
+                        style={[styles.item,{color: utils.colors.primaria}]}
                         placeholder={placeholder}
                         onFocus={() => this.onFocus()}
                         onBlur={() => this.onBlur()}
+                        onChangeText={text => this.props.value(text)}
                     />
                 </Animated.View>
             </View>
