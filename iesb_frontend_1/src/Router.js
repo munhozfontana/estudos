@@ -2,10 +2,17 @@ import { createAppContainer, createStackNavigator } from 'react-navigation';
 import React from "react";
 import Degrade from './components/Degrade';
 import Main from './pages/Main';
+import Login from './pages/Login';
 
 
 const AppNavigator = createStackNavigator({
-    'main': {
+    'Login': {
+        screen: Login,
+        navigationOptions: {
+            title: 'Login Todo IESB',
+        }
+    },
+    'Main': {
         screen: Main,
         navigationOptions: {
             title: 'Todo IESB',

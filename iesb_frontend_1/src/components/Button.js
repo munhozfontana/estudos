@@ -6,6 +6,10 @@ export class Button extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            width: this.props.width
+        }
+
     }
 
     componentWillMount() {
@@ -34,9 +38,9 @@ export class Button extends Component {
 
         return (
             <TouchableWithoutFeedback onPress={() => {this.onPress()}} >
-                <Animated.View style={[styles.container, { borderColor: interpolateColor}]} >
+                <Animated.View style={[styles.container, { borderColor: interpolateColor},{width:  this.state.width, height: this.props.height}]} >
                     <View style={styles.btn}>
-                        <Animated.Text style={[styles.text,{ color: interpolateColor} ]}>Salvar</Animated.Text>
+                        <Animated.Text style={[styles.text,{ color: interpolateColor} ]}>{ this.props.label }</Animated.Text>
                     </View>
                 </Animated.View>
             </TouchableWithoutFeedback>
@@ -46,13 +50,11 @@ export class Button extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        height: 30,
+        // flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: '3%',
         marginRight: '3%',
-        width: 'auto',
         borderWidth: 2.5,
         borderRadius: 20
     },

@@ -61,7 +61,7 @@ class Main extends Component {
     return (
       <View style={[styles.container]}>
 
-        <View style={[styles.row, { flexDirection: 'row' }]}>
+        {/* <View style={[styles.row, { flexDirection: 'row' }]}>
           <View style={{ flex: 12 }}>
             <Input value={value => this.setState({ nome: value })} placeholder='Primeiro Nome' />
           </View>
@@ -98,7 +98,7 @@ class Main extends Component {
           numColumns={2}
           ListHeaderComponent={props => (<View style={styles.marginTop} />)}
           ListFooterComponent={props => (<View style={styles.marginBottom} />)}
-        />
+        /> */}
 
       </View>
     )

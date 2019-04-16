@@ -41,7 +41,7 @@ export default class Input extends Component {
         return (
             <View style={styles.container} >
                 <Animated.View
-                    style={[styles.input, animatedStyle]}>
+                    style={[styles.input, animatedStyle, {width: this.props.width}]}>
                     <TextInput
                         placeholderTextColor={utils.colors.primaria}
                         style={[styles.item,{color: utils.colors.primaria}]}
@@ -59,10 +59,9 @@ export default class Input extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         marginLeft: '3%',
-        marginRight: '3%',
-        width: 'auto'
+        marginRight: '3%'
     },
     input: {
         borderBottomWidth: 2.5,

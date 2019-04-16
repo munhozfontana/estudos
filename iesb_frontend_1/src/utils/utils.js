@@ -6,7 +6,7 @@ const utils = {
     others: '#324FE0',
     detalhes: '#FAA737',
   },
-  url: 'http://192.168.1.2:3000'
+  url: 'http://ec2-18-188-199-202.us-east-2.compute.amazonaws.com:3000/'
 }
 
 
