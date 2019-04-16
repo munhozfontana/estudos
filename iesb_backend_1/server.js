@@ -3,6 +3,8 @@ const app = express()
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid');
+const dynamoDB = require('dynamodb');
+
 
 const bodyParser = require('body-parser');
 app.use(cors());
@@ -44,7 +46,6 @@ verificarTokenJWT = (req, res, next) => {
 
     try {
        var jwtDecodificado = jwt.verify(token, palavraChave);
-    
         tempoDeLogin = ((new Date().getTime() + 1) / 1000 - jwtDecodificado.exp) * -1
         next();
     } catch (error) {
@@ -77,7 +78,7 @@ app.post('/todo', (req, res) => {
     const { nome, apelido, idade, todo } = req.body
     nome && idade ?
         idade < 18 ?
-            res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`) : (todos.push({ id: uuid(), nome, apelido, idade, todo }),
+            res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`) : dynamoDB.putItem({ ta }) (todos.push({ id: uuid(), nome, apelido, idade, todo }),
                 res.status(201).send(`O Todo ${nome} foi criado com sucesso`)) : res.status(403).send(`Nome e Idade não podem ser nulos`);
 });
 
@@ -99,6 +100,5 @@ app.delete('/todo/:byId', (req, res) => {
     inicialUser != todos.length ?
         res.status(200).send('Todo removido com sucesso') : res.status(404).send(`Todo com o Id:${req.params.byId} não foi encontrado`);
 })
-
 
 app.listen(porta, () => console.log(`Back-end na porta ${porta}`)); 
