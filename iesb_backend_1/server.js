@@ -33,19 +33,19 @@ gerarJWT = (usuario) => {
 }
 
 verificarTokenJWT = (req, res, next) => {
-    console.log(`ip`,  req.ip);
-    console.log(`hostname`,  req.hostname);
-    
+    console.log(`ip`, req.ip);
+    console.log(`hostname`, req.hostname);
+
     const { headers, url } = req;
     if (url == `/login`) {
-      return next();
+        return next();
     }
 
     var token = headers['x-access-token'];
     if (!token) return res.status(401).send({ auth: false, message: 'Token não encontrado' })
 
     try {
-       var jwtDecodificado = jwt.verify(token, palavraChave);
+        var jwtDecodificado = jwt.verify(token, palavraChave);
         tempoDeLogin = ((new Date().getTime() + 1) / 1000 - jwtDecodificado.exp) * -1
         next();
     } catch (error) {
@@ -76,10 +76,12 @@ app.get('/todo/:byId', (req, res) => {
 
 app.post('/todo', (req, res) => {
     const { nome, apelido, idade, todo } = req.body
-    nome && idade ?
-        idade < 18 ?
-            res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`) : dynamoDB.putItem({ ta }) (todos.push({ id: uuid(), nome, apelido, idade, todo }),
-                res.status(201).send(`O Todo ${nome} foi criado com sucesso`)) : res.status(403).send(`Nome e Idade não podem ser nulos`);
+
+        (nome && idade)
+        ? (idade < 18)
+            ? res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`)
+            : (dynamoDB.putItem({ TableName: "Todo", Item: { id: { S: uuid() }, nome: { S: nome }, apelido: { S: apelido }, idade: { S: idade }, todo: { S: todo } } }), res.status(201).send(`O Todo ${nome} foi criado com sucesso`))
+        : res.status(403).send(`Nome e Idade não podem ser nulos`);
 });
 
 app.put('/todo/:byId', (req, res) => {
