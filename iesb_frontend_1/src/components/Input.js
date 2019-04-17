@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, StyleSheet, TextInput, View } from 'react-native';
-import utils from '../utils/utils';
+import utils from '../utils/cores';
 
 
 export default class Input extends Component {

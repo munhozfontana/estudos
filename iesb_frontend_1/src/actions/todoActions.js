@@ -1,8 +1,11 @@
 import axios from 'axios';
-import utils from '../utils/utils';
+import dominio from '../utils/dominio';
 
-const url = 'localhost:3000'
-
+let config = {
+	headers: {
+		'Content-Type': 'application/json',
+	}
+}
 
 // LISTAR all ---->>>
 export const LOGIN = 'LOGIN';
@@ -11,20 +14,15 @@ export const loginTodo = login => ({
 	login
 });
 
+
+
 export const tryLoginTodo = login => dispatch => {
-	let config = {
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    }
-	  
-	
-	return axios.post(``, login, config)
-		.then(response => {;
-			loginTodo(dispatch(loginTodo( response.data )));
+	return axios.post(`${dominio.localhost}login`, login, config)
+		.then(response => {
+			loginTodo(dispatch(loginTodo(response.data)));
 			return response.data;
 		}).catch(error => {
-			console.log('Login error',error);
+			console.log('Login error', error);
 			return error;
 		});
 }
@@ -47,7 +45,7 @@ export const listarAllTodo = todo => ({
 });
 
 export const tryListAllTodo = () => dispatch => {
-	return axios.get(`${utils.url}/todos`)
+	return axios.get(`${dominio.localhost}/todos`)
 		.then(response => {
 			listarAllTodo(dispatch(listarAllTodo(response)));
 			return response.data;
@@ -67,7 +65,7 @@ export const insertTodo = todo => ({
 
 
 export const tryInsertTodo = props => dispatch => {
-	return axios.post(`${utils.url}/todo`, props)
+	return axios.post(`${dominio.localhost}/todo`, props)
 		.then(response => {
 			insertTodo(dispatch(insertTodo({ response, props })));
 			return response.data;
@@ -91,9 +89,9 @@ export const deleteTodo = todo => ({
 });
 
 export const tryDeleteTodo = id => dispatch => {
-	console.log(`${utils.url}/todo/${id}`);
+	console.log(`${dominio.localhost}/todo/${id}`);
 
-	return axios.delete(`${utils.url}/todo/${id}`)
+	return axios.delete(`${dominio.localhost}/todo/${id}`)
 		.then(response => {
 			deleteTodo(dispatch(deleteTodo(response)));
 			return response.data;

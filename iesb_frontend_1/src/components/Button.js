@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
-import utils from '../utils/utils';
+import utils from '../utils/cores';
 
 export class Button extends Component {
 

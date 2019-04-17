@@ -15,6 +15,8 @@ export class Login extends Component {
   login() {
     this.props.tryLoginTodo(this.state)
       .then(login => {
+        console.log(login, `aqui`);
+        
         // this.props.navigation.navigate('Main')
       })
       .catch(error => {

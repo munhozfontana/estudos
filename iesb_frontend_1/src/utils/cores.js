@@ -5,8 +5,7 @@ const utils = {
     primaria: '#8700F5',
     others: '#324FE0',
     detalhes: '#FAA737',
-  },
-  url: 'http://ec2-18-188-199-202.us-east-2.compute.amazonaws.com:3000/'
+  }
 }
 
 
