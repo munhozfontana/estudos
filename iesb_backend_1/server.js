@@ -3,7 +3,6 @@ const app = express()
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid');
-const dynamoDB = require('dynamodb');
 
 
 const bodyParser = require('body-parser');
@@ -11,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const porta = 3001
+const porta = 3000
 let tempoDeLogin = null;
 const palavraChave = `I'am a heppy developer`
 let todos = []
@@ -80,7 +79,9 @@ app.post('/todo', (req, res) => {
         (nome && idade)
         ? (idade < 18)
             ? res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`)
-            : (dynamoDB.putItem({ TableName: "Todo", Item: { id: { S: uuid() }, nome: { S: nome }, apelido: { S: apelido }, idade: { S: idade }, todo: { S: todo } } }), res.status(201).send(`O Todo ${nome} foi criado com sucesso`))
+            : (
+                // dynamoDB.putItem({ TableName: "Todo", Item: { id: { S: uuid() }, nome: { S: nome }, apelido: { S: apelido }, idade: { S: idade }, todo: { S: todo } } }),
+                 res.status(201).send(`O Todo ${nome} foi criado com sucesso`))
         : res.status(403).send(`Nome e Idade não podem ser nulos`);
 });
 

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Animated, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
-import utils from '../utils/cores';
+import utils from '../utils/utils';
 
 export class Button extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            width: this.props.width
+            border: new Animated.Value(2)
         }
 
     }
@@ -17,16 +17,36 @@ export class Button extends Component {
     }
 
     onPress() {
-        this.props.click();
-        Animated.timing(this.changeColors, {
-            toValue: 300,
-            duration: 250
-        }).start(() => {
+        Animated.parallel([
+            this.props.click(),
             Animated.timing(this.changeColors, {
-                toValue: 0,
+                toValue: 300,
                 duration: 250
-            }).start();
-        })
+            }).start(() => {
+                Animated.timing(this.changeColors, {
+                    toValue: 0,
+                    duration: 250,
+                }).start();
+            }),
+            // Animated.timing(this.state.height, {
+            //     toValue: this.props.height + 87,
+            //     duration: 200,
+            // }).start(() => {
+            //     Animated.timing(this.state.height, {
+            //         toValue: this.props.height,
+            //         duration: 250,
+            //     }).start();
+            // }),
+            Animated.timing(this.state.border, {
+                toValue: 5,
+                duration: 200,
+            }).start(() => {
+                Animated.timing(this.state.border, {
+                    toValue: 2,
+                    duration: 250,
+                }).start();
+            })
+        ])
 
     }
 
@@ -37,11 +57,10 @@ export class Button extends Component {
         })
 
         return (
-            <TouchableWithoutFeedback onPress={() => {this.onPress()}} >
-                <Animated.View style={[styles.container, { borderColor: interpolateColor},{width:  this.state.width, height: this.props.height}]} >
-                    <View style={styles.btn}>
-                        <Animated.Text style={[styles.text,{ color: interpolateColor} ]}>{ this.props.label }</Animated.Text>
-                    </View>
+            
+            <TouchableWithoutFeedback onPress={() => { this.onPress() }} >
+                <Animated.View style={[styles.container, { borderColor: interpolateColor }, { borderWidth: this.state.border, height: this.props.height }]} >
+                        <Animated.Text style={[styles.item, { color: interpolateColor }]}>{this.props.label}</Animated.Text>
                 </Animated.View>
             </TouchableWithoutFeedback>
         )
@@ -55,12 +74,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: '3%',
         marginRight: '3%',
-        borderWidth: 2.5,
         borderRadius: 20
     },
-    btn: {
-    },
-    text: {
+
+    item: {
         fontSize: 18,
         color: utils.colors.primaria
     }

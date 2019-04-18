@@ -14,8 +14,6 @@ export const loginTodo = login => ({
 	login
 });
 
-
-
 export const tryLoginTodo = login => dispatch => {
 	return axios.post(`${dominio.localhost}login`, login, config)
 		.then(response => {
