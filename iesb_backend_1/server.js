@@ -62,7 +62,17 @@ app.post('/login', ({ body }, res) => {
 })
 
 app.get('/todos', (req, res) => {
-    res.status(200).send({ todos, tempoDeLogin })
+
+    todoDAO.listAll(req.body, (err, data) => {
+        
+        if (err) {
+            return res.status(500).send(err);
+        } else {
+            res.status(200).send({ data, tempoDeLogin })
+        }
+    
+    })
+    
 });
 
 app.get('/todo/:byId', (req, res) => {

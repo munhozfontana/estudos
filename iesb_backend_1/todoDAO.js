@@ -76,24 +76,28 @@ const insert = async (todo, callback) => {
 }
 
 const listAll = (callback) => {
-    dynamoDB.scan({ TableName: 'Todos' }, (err, data) => {
+
+    dynamoDB.scan({ TableName: 'Todo' }, (err, data) => {
         if (err) {
             callback(err, null);
         } else {
             const list = [];
+
             data.Items.forEach(item => {
                 const todo = {
                     id: item.id.S,
-                    title: item.title.S,
-                    description: item.description.S,
-                    isPriority: item.isPriority.BOOL,
-                    isDone: item.isDone.BOOL,
+                    titulo: item.titulo.S,
+                    descricao: item.descricao.S,
+                    idade: item.idade.N,
+                    apelido: item.apelido.S,
                 }
                 list.push(todo);
             });
+
+            
             callback(null, list);
         }
-    });
+    },);
 }
 
 const findTodoById = (id, callback) => {
