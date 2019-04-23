@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/express": "^4.16.1",
     "aws": "0.0.3-2",
+    "aws-sdk": "^2.441.0",
     "cors": "^2.8.5",
     "dynamodb": "^1.2.0",
     "express": "^4.16.4",

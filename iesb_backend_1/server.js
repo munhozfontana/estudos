@@ -2,8 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const uuid = require('uuid');
-
+const todoDAO = require('./todoDAO.js');
 
 const bodyParser = require('body-parser');
 app.use(cors());
@@ -28,7 +27,7 @@ let usuarios = [
 gerarJWT = (usuario) => {
     return jwt.sign({
         usuario
-    }, palavraChave, { expiresIn: 60 });
+    }, palavraChave, { expiresIn: 3600 });
 }
 
 verificarTokenJWT = (req, res, next) => {
@@ -73,15 +72,22 @@ app.get('/todo/:byId', (req, res) => {
 });
 
 
-app.post('/todo', (req, res) => {
-    const { nome, apelido, idade, todo } = req.body
+app.post('/todo', async (req, res) => {
 
-        (nome && idade)
+    const { titulo, apelido, idade, descricao } = req.body
+
+
+    await
+        (req.body.apelido && req.body.idade)
         ? (idade < 18)
-            ? res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`)
+            ? res.status(401).send(`O ${req.body.apelido} inserir um Todo`)
             : (
-                // dynamoDB.putItem({ TableName: "Todo", Item: { id: { S: uuid() }, nome: { S: nome }, apelido: { S: apelido }, idade: { S: idade }, todo: { S: todo } } }),
-                 res.status(201).send(`O Todo ${nome} foi criado com sucesso`))
+                todoDAO.insert(req.body, (err, data) => {
+                    if (err) {
+                        res.status(500).send(err);
+                    }
+                }),
+                res.status(201).send(`O Todo ${apelido} foi criado com sucesso`))
         : res.status(403).send(`Nome e Idade não podem ser nulos`);
 });
 
@@ -104,4 +110,14 @@ app.delete('/todo/:byId', (req, res) => {
         res.status(200).send('Todo removido com sucesso') : res.status(404).send(`Todo com o Id:${req.params.byId} não foi encontrado`);
 })
 
-app.listen(porta, () => console.log(`Back-end na porta ${porta}`)); 
+
+
+todoDAO.init((err, data) => {
+    if (err) {
+        console.log('Servidor nao iniciado por erro', err);
+    } else {
+        app.listen(porta, () => { console.log(`Back-end na porta ${porta}`)
+        });
+    }
+});
+
