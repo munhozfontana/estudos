@@ -63,7 +63,7 @@ app.post('/login', ({ body }, res) => {
 
 app.get('/todos', (req, res) => {
 
-    todoDAO.listAll(req.body, (err, data) => {
+    todoDAO.listAll((err, data) => {
         
         if (err) {
             return res.status(500).send(err);

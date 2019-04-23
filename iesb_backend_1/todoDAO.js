@@ -76,13 +76,11 @@ const insert = async (todo, callback) => {
 }
 
 const listAll = (callback) => {
-
     dynamoDB.scan({ TableName: 'Todo' }, (err, data) => {
         if (err) {
             callback(err, null);
         } else {
             const list = [];
-
             data.Items.forEach(item => {
                 const todo = {
                     id: item.id.S,
@@ -93,11 +91,10 @@ const listAll = (callback) => {
                 }
                 list.push(todo);
             });
-
             
             callback(null, list);
         }
-    },);
+    });
 }
 
 const findTodoById = (id, callback) => {
