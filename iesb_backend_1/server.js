@@ -13,6 +13,15 @@ const porta = 3000
 let tempoDeLogin = null;
 const palavraChave = `I'am a heppy developer`
 let todos = []
+let todoModel = {
+    "id": null,
+    "name": null,
+    "review": null,
+    "latitude": null,
+    "longitude": null,
+    "thumbnail": null,
+};
+
 let usuarios = [
     {
         login: 'usuario',
@@ -24,6 +33,7 @@ let usuarios = [
     }
 ]
 
+
 gerarJWT = (usuario) => {
     return jwt.sign({
         usuario
@@ -31,20 +41,20 @@ gerarJWT = (usuario) => {
 }
 
 verificarTokenJWT = (req, res, next) => {
-    console.log(`ip`,  req.ip);
-    console.log(`hostname`,  req.hostname);
-    
+    console.log(`ip`, req.ip);
+    console.log(`hostname`, req.hostname);
+
     const { headers, url } = req;
-    if (url == `/login`) {
-      return next();
+    if (url == `todo/login`) {
+        return next();
     }
 
     var token = headers['x-access-token'];
     if (!token) return res.status(401).send({ auth: false, message: 'Token não encontrado' })
 
     try {
-       var jwtDecodificado = jwt.verify(token, palavraChave);
-    
+        var jwtDecodificado = jwt.verify(token, palavraChave);
+
         tempoDeLogin = ((new Date().getTime() + 1) / 1000 - jwtDecodificado.exp) * -1
         next();
     } catch (error) {
@@ -54,12 +64,12 @@ verificarTokenJWT = (req, res, next) => {
 
 app.use(verificarTokenJWT);
 
-app.post('/login', ({ body }, res) => {
+app.post('todo/login', ({ body }, res) => {
     let usuarioEncontrado = usuarios.find(usuario => body.login == usuario.login && body.senha == usuario.senha);
 
     usuarioEncontrado ?
         res.status(200).send({ token: gerarJWT(usuarioEncontrado), auth: true }) :
-        res.status(401).send("login ou senha estão incorretos")
+        res.status(401).send({ message: "login ou senha estão incorretos" })
 })
 
 app.get('/todos', (req, res) => {
@@ -74,11 +84,18 @@ app.get('/todo/:byId', (req, res) => {
 
 
 app.post('/todo', (req, res) => {
-    const { nome, apelido, idade, todo } = req.body
-    nome && idade ?
-        idade < 18 ?
-            res.status(401).send(`O Todo ${nome} não possui idade correta para se cadastrar`) : (todos.push({ id: uuid(), nome, apelido, idade, todo }),
-                res.status(201).send(`O Todo ${nome} foi criado com sucesso`)) : res.status(403).send(`Nome e Idade não podem ser nulos`);
+    const { name, id } = req.body
+    idImage = uuid()
+
+    var novo = !!todos.find(todo => todo.id == id)
+
+    if (novo) {
+        res.status(401).send({ message: `Essa opinião já foi enviada` })
+        return
+    }
+
+    todos.push({ ...req.body, idImage })
+    res.status(201).send({ message: `O Todo ${name} foi criado com sucesso`, id })
 });
 
 app.put('/todo/:byId', (req, res) => {
